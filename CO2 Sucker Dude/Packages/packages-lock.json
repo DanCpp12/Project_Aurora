@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.simonoliver.unityfigma": {
-      "version": "file:C:/Users/addho/Perforce/FG23_BOD_SKE_GP1_Team09/FigmaBridge/UnityFigmaBridge-main/UnityFigmaBridge-main",
+      "version": "file:C:/Users/addho/Documents/GitHub/Suckerdude/FigmaBridge/UnityFigmaBridge-main/UnityFigmaBridge-main",
       "depth": 0,
       "source": "local",
       "dependencies": {
