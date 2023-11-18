@@ -1390,6 +1390,7 @@ GameObject:
   - component: {fileID: 1675274514}
   - component: {fileID: 1675274513}
   - component: {fileID: 1675274517}
+  - component: {fileID: 1675274518}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Suck Position
@@ -1495,6 +1496,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d093dfa6c2dccc469d1657d8fbeac52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1675274518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675274512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f007b2b3d9cb32a428023f9190c262b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointMuliplier: 1
+  points: 0
+  Score: {fileID: 11400000, guid: 08e384c0415e98948ba723a3cfb726de, type: 2}
 --- !u!1 &1820910861
 GameObject:
   m_ObjectHideFlags: 0
