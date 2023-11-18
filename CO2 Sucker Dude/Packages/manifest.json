@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.simonoliver.unityfigma": "file:C:/Users/addho/Perforce/FG23_BOD_SKE_GP1_Team09/FigmaBridge/UnityFigmaBridge-main/UnityFigmaBridge-main",
     "com.unity.collab-proxy": "2.1.0",
     "com.unity.feature.development": "1.0.1",
     "com.unity.textmeshpro": "3.0.6",
