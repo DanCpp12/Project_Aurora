@@ -11,6 +11,7 @@ public class InputControlls : MonoBehaviour
     public Rigidbody rb;
     public GameObject linjal;
     public Transform orientation;
+    [SerializeField] private GameObject CubeBody;
     
     
     [Header("Controls")]
@@ -69,26 +70,28 @@ public class InputControlls : MonoBehaviour
         
         //Apply orienation and create movedirection
         moveDirection = orientation.forward * movementInput.y + orientation.right * movementInput.x;
-        if (moveDirection != Vector3.zero)
-            transform.forward = Vector3.Slerp(transform.forward, moveDirection.normalized, Time.deltaTime * rotationSpeed);
-            
+            CubeBody.transform.forward = playerCamera.transform.forward;
+            //CubeBody.transform.forward = Vector3.Slerp(transform.position, moveDirection.normalized, Time.deltaTime * rotationSpeed);
+        // if (moveDirection != Vector3.zero)
+        // {
+        //     
+        // }
+
     }
     
     private void SetVelocity()
     {
-        Vector3 newMovement = moveDirection.normalized * (speed  * Time.deltaTime);
-        newMovement.y = rb.velocity.y;
         
-        rb.velocity = newMovement;
+        transform.Translate(moveDirection.normalized * speed  * Time.deltaTime);
+
+        
     }
     private void Update()
     {
-       
         SetDirection();
-
+        SetVelocity();
     }
     private void FixedUpdate()
     {
-        SetVelocity();
     }
 }
