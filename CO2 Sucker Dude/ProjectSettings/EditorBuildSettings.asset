@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Daniel/gameprototype.unity
+    guid: 56c7b7a6efd319449a32c1b45f945a3d
+  - enabled: 1
+    path: Assets/Daniel/gameOver/gameOverPrototype.unity
+    guid: baa87a3feadb70b41bec10d669b84e8c
   m_configObjects: {}
