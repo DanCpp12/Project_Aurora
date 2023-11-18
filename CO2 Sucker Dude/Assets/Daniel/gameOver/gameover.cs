@@ -11,6 +11,6 @@ public class gameover : MonoBehaviour
     void Start()
     {
         soreText.text = "You got " + score.Score.ToString() + " points";
-        score.Score = 0;
+        //score.Score = 0;
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class qualityControl : MonoBehaviour
 {
@@ -12,5 +13,10 @@ public class qualityControl : MonoBehaviour
     {
         Smoke = GameObject.FindGameObjectsWithTag("Smoke");
         airQuality.value = Smoke.Length * 0.1f;
+        if(airQuality.value == 1)
+        {
+            SceneManager.LoadSceneAsync("gameOverPrototype");
+            //Change To Game Over Scene
+        }
     }
 }
