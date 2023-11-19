@@ -1552,6 +1552,7 @@ MonoBehaviour:
   suctionTag: Suck Boundry
   suckpointObject: {fileID: 1059185724}
   distanceToDestroySmoke: 0.7
+  score: {fileID: 11400000, guid: 08e384c0415e98948ba723a3cfb726de, type: 2}
 --- !u!1001 &4849896489675741189
 PrefabInstance:
   m_ObjectHideFlags: 0

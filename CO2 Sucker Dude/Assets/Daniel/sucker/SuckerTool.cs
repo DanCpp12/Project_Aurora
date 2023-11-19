@@ -9,10 +9,11 @@ public class SuckerTool : MonoBehaviour
     [SerializeField] private string suctionTag;
     [SerializeField] private GameObject suckpointObject;
     [SerializeField] private float distanceToDestroySmoke;
+    [SerializeField] private score score;
 
     void Start()
     {
-        
+        score.Score = 0;
     }
 
 
@@ -38,7 +39,8 @@ public class SuckerTool : MonoBehaviour
                 if (Vector3.Distance(smokey.transform.position, suckpointObject.transform.position) < distanceToDestroySmoke)
                 {
                     // The smoke is at position, suck it up.
-                    Debug.Log("SCORE, fångat röket och räddat dagen.");
+                    score.Score++;
+                    Debug.Log("SCORE, fångat röket och räddat dagen. Aktuell poäng: "+score.Score.ToString());
                     Destroy(smokey.gameObject);
                 }
             }
