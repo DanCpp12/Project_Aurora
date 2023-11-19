@@ -66,4 +66,11 @@ public class SuckerTool : MonoBehaviour
             hooverSound.pitch = newPitch;
         }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        // Fulfix. 
+
+        hooverSound.pitch = idlePitch;
+    }
 }
