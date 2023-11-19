@@ -20,7 +20,7 @@ public class SuckerDudeMovement : MonoBehaviour
 
     void Update()
     {
-        if (transform.position != oldTransform)
+        if (Vector3.Distance(transform.position, oldTransform) > 0.01f)
         {
             walking = true;
             oldTransform = transform.position;
@@ -31,5 +31,8 @@ public class SuckerDudeMovement : MonoBehaviour
         }
         
         animator.SetBool("WalkingBool", walking);
+
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
     }
 }

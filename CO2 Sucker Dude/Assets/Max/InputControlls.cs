@@ -19,6 +19,9 @@ public class InputControlls : MonoBehaviour
     [SerializeField] private GameObject gunArm;
 
     [SerializeField] private GameObject lookAtObject;
+
+    public GameObject cube;
+    
     
     
     [Header("Controls")]
@@ -36,6 +39,8 @@ public class InputControlls : MonoBehaviour
     
     public float speed = 5f;
     public float rotationSpeed = 10f;
+
+    public Animator animator;
     
     private void Awake()
     {
@@ -64,6 +69,14 @@ public class InputControlls : MonoBehaviour
     {
         movementInput = obj.ReadValue<Vector2>();
 
+        if (Mathf.Abs(movementInput.x) > 0.01f || Mathf.Abs(movementInput.y) > 0.01f)
+        {
+            animator.SetTrigger("Walk");
+            }
+        else
+        {
+            animator.SetTrigger("Stand");
+        }
     }
     
     private void SetDirection()
