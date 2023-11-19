@@ -11,6 +11,11 @@ public class SuckerTool : MonoBehaviour
     [SerializeField] private float distanceToDestroySmoke;
     [SerializeField] private score score;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource hooverSound;
+    [SerializeField] private float idlePitch;
+    [SerializeField] private float suckPitch;
+
     void Start()
     {
         score.Score = 0;
@@ -28,10 +33,12 @@ public class SuckerTool : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        float newPitch = idlePitch;
         // Check if we are inside a trigger. THen act god dammit
         if (other.gameObject.tag == suctionTag)
         {
             // We are inside a suction zone
+            newPitch = suckPitch;
             SmokeMover smokey = other.GetComponentInParent<SmokeMover>();
             if (smokey != null)
             {
@@ -44,6 +51,10 @@ public class SuckerTool : MonoBehaviour
                     Destroy(smokey.gameObject);
                 }
             }
+        }
+        if (newPitch != hooverSound.pitch)
+        {
+            hooverSound.pitch = newPitch;
         }
     }
 }
