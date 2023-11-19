@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SuckerDudeMovement : MonoBehaviour
 {
     Rigidbody rb;
+    Vector3 oldTransform = Vector3.zero;
+    private bool walking = false;
     public float moveSpeed = 5f;
     public float rotateSpeed = 5f;
     public Animator animator;
@@ -12,25 +15,21 @@ public class SuckerDudeMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        oldTransform = transform.position;
     }
 
     void Update()
     {
-        animator.SetFloat("Speed", rb.velocity.magnitude);
-    }
-
-    private void FixedUpdate()
-    {
-        rb.AddForce(transform.forward * moveSpeed * Input.GetAxis("Vertical"), ForceMode.Acceleration);
-
-
-        // Läs av musens rörelse
-        float mouseX = Input.GetAxis("Mouse X");
-
-        // Skapa en rotationsvektor baserat på musens rörelse
-        Vector3 rotation = new Vector3(0f, mouseX, 0f) * rotateSpeed;
-
-        // Applicera rotationen på karaktären
-        rb.AddTorque(rotation);
+        if (transform.position != oldTransform)
+        {
+            walking = true;
+            oldTransform = transform.position;
+        }
+        else
+        {
+            walking = false;
+        }
+        
+        animator.SetBool("WalkingBool", walking);
     }
 }

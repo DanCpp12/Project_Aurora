@@ -9,9 +9,16 @@ public class InputControlls : MonoBehaviour
 {
         [Header("Components")]
     public Rigidbody rb;
-    public GameObject linjal;
-    public Transform orientation;
-    [SerializeField] private GameObject CubeBody;
+    
+    //An empty object transform to tell the code which way the camera is facing and making
+    //that the forward transform
+    public Transform CameraKompass;
+    
+    [SerializeField] private GameObject Body;
+
+    [SerializeField] private GameObject gunArm;
+
+    [SerializeField] private GameObject lookAtObject;
     
     
     [Header("Controls")]
@@ -32,8 +39,8 @@ public class InputControlls : MonoBehaviour
     
     private void Awake()
     {
+        //Assigns Player input and gives orientation a starting Value
         controls = new PlayerInput();
-        orientation = linjal.transform;
     }
 
 
@@ -41,7 +48,6 @@ public class InputControlls : MonoBehaviour
     private void OnEnable()
     {
         move = controls.Player.Movement; 
-       
         
         move.Enable();
         move.performed += OnMove;
@@ -62,27 +68,29 @@ public class InputControlls : MonoBehaviour
     
     private void SetDirection()
     {
-        //Figure out forward vector from camera to player
+        //Shortening variable
         var cpos = playerCamera.transform.position;
-        var newViewDirection = this.gameObject.transform.position - new Vector3(cpos.x, gameObject.transform.position.y, cpos.z);
-        orientation.forward = newViewDirection.normalized;
         
+        //Subtracts the cameras position from the position you're looking at to get 
+        var newViewDirection = lookAtObject.gameObject.transform.position - new Vector3(cpos.x, lookAtObject.gameObject.transform.position.y, cpos.z);
+        CameraKompass.forward = newViewDirection.normalized;
         
-        //Apply orienation and create movedirection
-        moveDirection = orientation.forward * movementInput.y + orientation.right * movementInput.x;
-            CubeBody.transform.forward = playerCamera.transform.forward;
-            //CubeBody.transform.forward = Vector3.Slerp(transform.position, moveDirection.normalized, Time.deltaTime * rotationSpeed);
-        // if (moveDirection != Vector3.zero)
-        // {
-        //     
-        // }
-
+        //Combines player input to the current forward direction
+        moveDirection = CameraKompass.forward * movementInput.y + CameraKompass.right * movementInput.x;
+        
+        //Two different variables so that only the arm turns up and down while turning, not the entire body
+        
+        //The body
+        Body.transform.right = playerCamera.transform.right;
+            
+        //The arm
+        gunArm.transform.forward = playerCamera.transform.forward;
     }
     
     private void SetVelocity()
     {
-        
-        transform.Translate(moveDirection.normalized * speed  * Time.deltaTime);
+        //Movement
+        transform.Translate(moveDirection * speed  * Time.deltaTime);
 
         
     }
@@ -90,8 +98,5 @@ public class InputControlls : MonoBehaviour
     {
         SetDirection();
         SetVelocity();
-    }
-    private void FixedUpdate()
-    {
     }
 }
