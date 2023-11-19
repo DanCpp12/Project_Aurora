@@ -7,7 +7,7 @@ public class menuButton : MonoBehaviour
 {
     public void StartBtn()
     {
-        SceneManager.LoadSceneAsync("MalinMainScene");
+        SceneManager.LoadSceneAsync("MalinMainSceneCopy");
     }
     public void ExitBtn()
     {
