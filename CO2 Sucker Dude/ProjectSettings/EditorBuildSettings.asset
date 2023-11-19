@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Daniel/TitleMenu/Titlemenu.unity
     guid: dd244f4a5ac167e41a138f00d9aae38f
   - enabled: 1
-    path: Assets/Scenes/MalinMainScene.unity
-    guid: 0977338820d5125498ad3f69395d4792
+    path: Assets/Scenes/MalinMainSceneCopy.unity
+    guid: 7ee9f05079f6f43449298b294cbc90ee
   - enabled: 1
     path: Assets/Daniel/gameOver/gameOverPrototype.unity
     guid: baa87a3feadb70b41bec10d669b84e8c
