@@ -18,11 +18,11 @@ public class gameover : MonoBehaviour
     public void RestartBtn()
     {
         //score.Score = 0;
-        SceneManager.LoadSceneAsync("MalinMainScene");
+        SceneManager.LoadSceneAsync("MalinMainSceneCopy");
     }
     public void ExitBtn()
     {
         //score.Score = 0;
-        SceneManager.LoadSceneAsync("");
+        SceneManager.LoadSceneAsync("TitleMenu");
     }
 }
