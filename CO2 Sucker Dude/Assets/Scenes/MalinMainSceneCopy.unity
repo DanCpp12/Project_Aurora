@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -13283,36 +13283,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1858422894}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1859373051 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3437043976995308722, guid: c40f95634571ee74c8a839092b92aed9, type: 3}
-  m_PrefabInstance: {fileID: 2054050410284864275}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1859373057
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1859373051}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d093dfa6c2dccc469d1657d8fbeac52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1859373058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1859373051}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73fc4c586d078f441bb842e472c0da06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 10
 --- !u!1001 &1880590656
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14607,11 +14577,19 @@ PrefabInstance:
       value: SuckerDude
       objectReference: {fileID: 0}
     - target: {fileID: 3489727655991420490, guid: c40f95634571ee74c8a839092b92aed9, type: 3}
+      propertyPath: Body
+      value: 
+      objectReference: {fileID: 1584545835}
+    - target: {fileID: 3489727655991420490, guid: c40f95634571ee74c8a839092b92aed9, type: 3}
       propertyPath: speed
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3489727655991420490, guid: c40f95634571ee74c8a839092b92aed9, type: 3}
       propertyPath: GunArm
+      value: 
+      objectReference: {fileID: 1076468734}
+    - target: {fileID: 3489727655991420490, guid: c40f95634571ee74c8a839092b92aed9, type: 3}
+      propertyPath: gunArm
       value: 
       objectReference: {fileID: 1076468734}
     - target: {fileID: 3489727655991420490, guid: c40f95634571ee74c8a839092b92aed9, type: 3}
@@ -14888,12 +14866,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3437043976995308722, guid: c40f95634571ee74c8a839092b92aed9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1859373057}
-    - targetCorrespondingSourceObject: {fileID: 3437043976995308722, guid: c40f95634571ee74c8a839092b92aed9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1859373058}
     - targetCorrespondingSourceObject: {fileID: 248573414996025846, guid: c40f95634571ee74c8a839092b92aed9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 948251445}
