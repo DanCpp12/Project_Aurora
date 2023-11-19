@@ -11,6 +11,8 @@ public class smoke : MonoBehaviour
     [SerializeField] private float subtractInternalDelay = 0;
     private float i = 0;
     private int indexer;
+    [SerializeField] float minheight;
+    [SerializeField] float maxheight;
 
     private void Start()
     {
@@ -23,7 +25,8 @@ public class smoke : MonoBehaviour
         indexer = Random.Range(0, Positions.Count);
         if (i == 0)
         {
-            Instantiate(Smoke, Positions[indexer].transform.position, Quaternion.identity);
+            Vector3 spawnpos = new Vector3 (Positions[indexer].transform.position.x, Random.Range(minheight, maxheight), Positions[indexer].transform.position.z);
+            Instantiate(Smoke, spawnpos, Quaternion.identity);
         }
         i++;
         if (i > internalDelay)

@@ -40,7 +40,7 @@ public class SuckerTool : MonoBehaviour
                 {
                     // The smoke is at position, suck it up.
                     score.Score++;
-                    Debug.Log("SCORE, fångat röket och räddat dagen. Aktuell poäng: "+score.Score.ToString());
+                    Debug.Log("Aktuell poäng: "+score.Score.ToString());
                     Destroy(smokey.gameObject);
                 }
             }
