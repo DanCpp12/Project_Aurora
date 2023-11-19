@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class SuckerTool : MonoBehaviour
 {
@@ -15,16 +16,24 @@ public class SuckerTool : MonoBehaviour
     [SerializeField] private AudioSource hooverSound;
     [SerializeField] private float idlePitch;
     [SerializeField] private float suckPitch;
+    private AudioManager audiomanagern;
 
     void Start()
     {
         score.Score = 0;
+        audiomanagern = FindObjectOfType<AudioManager>();
     }
 
 
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            if (audiomanagern != null)
+            {
+                audiomanagern.MuteUnmute();
+            }
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
