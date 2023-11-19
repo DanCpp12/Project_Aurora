@@ -53,7 +53,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cd1fab5f57ac72443bd3cd322178258f, type: 2}
+  - {fileID: 2100000, guid: e6e0a605ee3e19a4d83fdf7f4fa9eaf3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1073,6 +1073,9 @@ MonoBehaviour:
   suckpointObject: {fileID: 5868043578401126334}
   distanceToDestroySmoke: 0.6
   score: {fileID: 11400000, guid: 08e384c0415e98948ba723a3cfb726de, type: 2}
+  hooverSound: {fileID: 0}
+  idlePitch: 0
+  suckPitch: 0
 --- !u!1 &3751703302521078598
 GameObject:
   m_ObjectHideFlags: 3
@@ -1099,7 +1102,7 @@ Transform:
   m_GameObject: {fileID: 3751703302521078598}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 2.2204458e-16, w: 1}
-  m_LocalPosition: {x: 0, y: -1.0000005, z: -0.5}
+  m_LocalPosition: {x: -0.0000009536743, y: -1.0000005, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1868,7 +1871,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e6e0a605ee3e19a4d83fdf7f4fa9eaf3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2241,7 +2244,7 @@ Transform:
   m_GameObject: {fileID: 8906088119426522225}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.31749916, y: 1.7425001, z: -1.4372501}
+  m_LocalPosition: {x: 0.3175001, y: 1.7425001, z: -1.4372501}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

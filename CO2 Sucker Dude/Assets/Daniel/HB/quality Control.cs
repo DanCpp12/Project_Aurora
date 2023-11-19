@@ -13,7 +13,11 @@ public class qualityControl : MonoBehaviour
     {
         Smoke = GameObject.FindGameObjectsWithTag("Smoke");
         airQuality.value = Smoke.Length * 0.1f;
-        if(airQuality.value == 1)
+        
+    }
+    public void OnSliderValue()
+    {
+        if (airQuality.value == 1)
         {
             SceneManager.LoadSceneAsync("gameOverPrototype");
             //Change To Game Over Scene
