@@ -26,12 +26,13 @@ private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
-
 	/** Camera boom positioning the camera above the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
-
 	UPROPERTY(VisibleAnywhere)
 	class UHealthComponent* HealthComponent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Damage = 20.f;
 };
 
