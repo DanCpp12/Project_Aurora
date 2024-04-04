@@ -49,6 +49,15 @@ AProject_AuroraCharacter::AProject_AuroraCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
+void AProject_AuroraCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	UE_LOG(LogTemp,
+		Log, 
+		TEXT("Attributes: Strength - %f, Dexterity - %f, Vitality - %f, Energy - %f"),
+		Strength, Dexterity, Vitality, Energy);
+}
+
 void AProject_AuroraCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);

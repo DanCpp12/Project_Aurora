@@ -13,7 +13,7 @@ class AProject_AuroraCharacter : public ACharacter
 
 public:
 	AProject_AuroraCharacter();
-
+	virtual void BeginPlay() override;
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -22,8 +22,14 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Damage = 20.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attributes")
+	float Strength = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attributes")
+	float Dexterity = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attributes")
+	float Vitality = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attributes")
+	float Energy = 1.f;
 
 private:
 	/** Top down camera */

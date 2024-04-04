@@ -2,7 +2,6 @@
 
 
 #include "HealthComponent.h"
-#include "ArmorComponent.h"
 
 UHealthComponent::UHealthComponent()
 {
