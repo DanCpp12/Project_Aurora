@@ -22,6 +22,9 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Damage = 20.f;
+
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -32,7 +35,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class UHealthComponent* HealthComponent = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Damage = 20.f;
+
 };
 
