@@ -40,7 +40,8 @@ private:
 	class USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere)
 	class UHealthComponent* HealthComponent = nullptr;
-
+	UPROPERTY(VisibleAnywhere)
+	class UAttributesComponent* AttributesComponent = nullptr;
 
 };
 

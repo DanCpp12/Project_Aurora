@@ -11,6 +11,7 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "HealthComponent.h"
+#include "AttributesComponent.h"
 
 AProject_AuroraCharacter::AProject_AuroraCharacter()
 {
@@ -41,8 +42,9 @@ AProject_AuroraCharacter::AProject_AuroraCharacter()
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	//Setup Health & Armor Component
+	//Setup Health & Attributes Components
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("Health");
+	AttributesComponent = CreateDefaultSubobject<UAttributesComponent>("Attributes");
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
