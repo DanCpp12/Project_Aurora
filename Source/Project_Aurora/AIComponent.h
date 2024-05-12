@@ -57,28 +57,36 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	USphereComponent* Sphere = nullptr;
 
-	UPROPERTY(Editanywhere)
-	int MovmentRange = 300;
-
-	UPROPERTY(EditDefaultsOnly/*, VisibleAnywhere*/)
-	int MovmentRadiusFromSpawnPoint = 1000;
-
-	UPROPERTY(Editanywhere/*, VisibleAnywhere*/)
-	float MovmentTimer;
-
-	UPROPERTY(VisibleAnywhere)
-	AActor* Targets[10] = { nullptr };
-	UPROPERTY(VisibleAnywhere)
-	FVector target;
-
-	UPROPERTY(VisibleAnywhere)
-	MovmentStates MovmentState;
-
-	UPROPERTY(VisibleAnywhere)
-	CombatStates CombatState;
-
+	//movment restricktions
 	FVector SpawnPoint;
 	float MTimer = 0;
+	UPROPERTY(Editanywhere, Category = "Movment Settings")
+	int MovmentRange = 300;
+	UPROPERTY(Editanywhere, Category = "Movment Settings")
+	int MovmentRadiusFromSpawnPoint = 1000;
+	UPROPERTY(Editanywhere, Category = "Movment Settings")
+	float MovmentTimer = 1;
+
+
+	//stuck
+	UPROPERTY(Editanywhere, Category = "Stuck Settings")
+	int Tolerance = 4;
+	UPROPERTY(Editanywhere, Category = "Stuck Settings")
+	float Delay = 1;
+	float DelayTimer = 0;
+	FVector OldPosition;
+	bool IsStuck();
+
+
+	//AI
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	AActor* Targets[10] = { nullptr };
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	FVector target;
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	MovmentStates MovmentState;
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	CombatStates CombatState;
 	void Base_EnemyMovmentState();
 	void Base_EnemyCombatState();
 };

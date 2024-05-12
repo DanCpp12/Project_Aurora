@@ -37,6 +37,9 @@ FVector UAIComponent::base_EnemyMovmentAI()
 		}
 		NewTarget = true;
 	}
+	if (!NewTarget) { NewTarget = IsStuck(); }
+	DelayTimer += GetWorld()->DeltaTimeSeconds;
+
 	Base_EnemyMovmentState();
 
 	if (MovmentState == MovmentStates::Attack)
@@ -114,6 +117,29 @@ void UAIComponent::HandleEndOverlap(UPrimitiveComponent* OverlappedComponent, AA
 		}
 	}
 	base_EnemyMovmentAI();
+}
+
+bool UAIComponent::IsStuck()
+{
+	if (FMath::IsNearlyEqual(GetOwner()->GetActorLocation().X, OldPosition.X, 4) &&
+		FMath::IsNearlyEqual(GetOwner()->GetActorLocation().Y, OldPosition.Y, 4))
+	{
+		if (Delay <= DelayTimer)
+		{
+			OldPosition = GetOwner()->GetActorLocation();
+			DelayTimer = 0;
+		}
+		return true;
+	}
+	else
+	{
+		if (Delay <= DelayTimer)
+		{
+			OldPosition = GetOwner()->GetActorLocation();
+			DelayTimer = 0;
+		}
+		return false;
+	}
 }
 
 void UAIComponent::Base_EnemyMovmentState()
