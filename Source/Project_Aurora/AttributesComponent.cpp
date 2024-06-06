@@ -10,18 +10,30 @@ UAttributesComponent::UAttributesComponent()
 	Dexterity = 1.f;
 	Vitality = 1.f;
 	Energy = 1.f;
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
 }
 
+void UAttributesComponent::BeginPlay() {
 
-// Called when the game starts
-void UAttributesComponent::BeginPlay()
-{
 	Super::BeginPlay();
+}
 
+void UAttributesComponent::LevelUp(EAttribute Attribute)
+{
+	if (Attribute == EAttribute::STRENGTH) {
+		Strength++;
+	}
+	else if (Attribute == EAttribute::DEXTERITY) {
+		Dexterity++;
+	}
+	else if (Attribute == EAttribute::VITALITY) {
+		Vitality++;
+	}
+	else if (Attribute == EAttribute::ENERGY) {
+		Energy++;
+	}
+	else {
+		UE_LOG(LogTemp,Error, TEXT("Invalid Attribute Type"))
+	}
 }
 
 
