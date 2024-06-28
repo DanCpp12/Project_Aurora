@@ -5,19 +5,38 @@
 class USphereComponent;
 
 UENUM(BlueprintType)
-enum class MovmentStates
+enum class MovementAI : uint8
 {
 	Null,
-	Idle,
-	Attack
+	Base,
+	Boss
 };
 
 UENUM(BlueprintType)
-enum class CombatStates
+enum class CombatAI : uint8
 {
 	Null,
+	Base,
+	Boss
+};
+
+UENUM(BlueprintType)
+enum class MovmentStates : uint8
+{
+	Null,
+	Idle,
 	Attack,
-	Block
+	Backup,
+	Charge
+};
+
+UENUM(BlueprintType)
+enum class CombatStates : uint8
+{
+	Null,
+	Basic_Attack,
+	Block,
+	Charge
 };
 
 UCLASS(meta = (BlueprintSpawnableComponent))
@@ -30,10 +49,15 @@ public:
 	void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
-	FVector base_EnemyMovmentAI();
+	void SetMovementAI(MovementAI AI) { movementAI = AI; };
+	UFUNCTION(BlueprintCallable)
+	void SetCombatAI(TEnumAsByte<CombatAI> AI) { combatAI = AI; };
 
 	UFUNCTION(BlueprintCallable)
-	bool base_EnemyCombatAI();
+	FVector PlayMovmentAI();
+
+	UFUNCTION(BlueprintCallable)
+	bool PlayCombatAI();
 
 	UFUNCTION()
 	void HandleBeginOverlap(
@@ -55,13 +79,13 @@ public:
 
 private:
 	UPROPERTY(EditDefaultsOnly)
-	USphereComponent* Sphere = nullptr;
+	USphereComponent* ViewField = nullptr;
 
 	//movment restricktions
 	FVector SpawnPoint;
 	float MTimer = 0;
 	UPROPERTY(Editanywhere, Category = "Movment Settings")
-	int MovmentRange = 300;
+	int TravleDistanse = 300;
 	UPROPERTY(Editanywhere, Category = "Movment Settings")
 	int MovmentRadiusFromSpawnPoint = 1000;
 	UPROPERTY(Editanywhere, Category = "Movment Settings")
@@ -80,6 +104,10 @@ private:
 
 	//AI
 	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	MovementAI movementAI = MovementAI::Null;
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	CombatAI combatAI = CombatAI::Null;
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
 	AActor* Targets[10] = { nullptr };
 	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
 	FVector target;
@@ -87,6 +115,16 @@ private:
 	MovmentStates MovmentState;
 	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
 	CombatStates CombatState;
+	//states
 	void Base_EnemyMovmentState();
 	void Base_EnemyCombatState();
+
+	void BossMovementStates();
+	void BossCombatStates();
+
+
+
+	//movement
+	void AttackMovement();
+	void IdleMovement();
 };

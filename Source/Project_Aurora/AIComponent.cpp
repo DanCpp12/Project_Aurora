@@ -6,12 +6,12 @@
 UAIComponent::UAIComponent()
 {
 	//create sphere object
-	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
-	Sphere->SetSphereRadius(300);
-	Sphere->bOwnerNoSee = false;
-	Sphere->SetHiddenInGame(false);
-	Sphere->OnComponentBeginOverlap.AddDynamic(this, &UAIComponent::HandleBeginOverlap);
-	Sphere->OnComponentEndOverlap.AddDynamic(this, &UAIComponent::HandleEndOverlap);
+	ViewField = CreateDefaultSubobject<USphereComponent>("ViewField");
+	ViewField->SetSphereRadius(300);
+	ViewField->bOwnerNoSee = false;
+	ViewField->SetHiddenInGame(false);
+	ViewField->OnComponentBeginOverlap.AddDynamic(this, &UAIComponent::HandleBeginOverlap);
+	ViewField->OnComponentEndOverlap.AddDynamic(this, &UAIComponent::HandleEndOverlap);
 }
 
 void UAIComponent::BeginPlay()
@@ -19,59 +19,61 @@ void UAIComponent::BeginPlay()
 	Super::BeginPlay();
 
 	//attach sphere to owner
-	Sphere->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	GetOwner()->FinishAndRegisterComponent(Sphere);
-	Sphere->SetupAttachment(GetOwner()->GetRootComponent());
+	ViewField->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	GetOwner()->FinishAndRegisterComponent(ViewField);
+	ViewField->SetupAttachment(GetOwner()->GetRootComponent());
 
 	SpawnPoint = GetOwner()->GetActorLocation();
 }
 
-FVector UAIComponent::base_EnemyMovmentAI()
+FVector UAIComponent::PlayMovmentAI()
 {
-	if ((int)GetOwner()->GetActorLocation().X <= (int)target.X + 60 && (int)GetOwner()->GetActorLocation().Y <= (int)target.Y + 60 &&
-		(int)GetOwner()->GetActorLocation().X >= (int)target.X - 60 && (int)GetOwner()->GetActorLocation().Y >= (int)target.Y - 60)
+	if (movementAI == MovementAI::Base)
 	{
-		if (MovmentState == MovmentStates::Idle && !NewTarget)
+		if ((int)GetOwner()->GetActorLocation().X <= (int)target.X + 60 && (int)GetOwner()->GetActorLocation().Y <= (int)target.Y + 60 &&
+			(int)GetOwner()->GetActorLocation().X >= (int)target.X - 60 && (int)GetOwner()->GetActorLocation().Y >= (int)target.Y - 60)
 		{
-			MTimer = 0;
+			if (MovmentState == MovmentStates::Idle && !NewTarget)
+			{
+				MTimer = 0;
+			}
+			NewTarget = true;
 		}
-		NewTarget = true;
-	}
-	if (!NewTarget) { NewTarget = IsStuck(); }
-	DelayTimer += GetWorld()->DeltaTimeSeconds;
+		if (!NewTarget) { NewTarget = IsStuck(); }
+		DelayTimer += GetWorld()->DeltaTimeSeconds;
 
-	Base_EnemyMovmentState();
+		Base_EnemyMovmentState();
 
-	if (MovmentState == MovmentStates::Attack)
-	{
-		NewTarget = false;
-		//UE_LOG(LogTemp, Log, TEXT("Attack actor att location: %f, %f, %f"), target.X, target.Y, target.Z);
-	}
-	else if (MovmentState == MovmentStates::Idle && NewTarget)
-	{
-		if (MovmentTimer <= MTimer)
+		if (MovmentState == MovmentStates::Attack)
 		{
 			NewTarget = false;
-			float angle = FMath::RandRange(-45.f, 45.f);
-			angle += GetOwner()->GetActorRotation().Yaw;
-			FVector offset = FVector(cosf(angle), sinf(angle), 0) * MovmentRange;
-			if (FVector::DistXY(GetOwner()->GetActorLocation() + offset, SpawnPoint) <= MovmentRadiusFromSpawnPoint)
-			{
-				target = GetOwner()->GetActorLocation() + offset;
-				target.Z = 100.f;
-				UE_LOG(LogTemp, Log, TEXT("move to random position: %f, %f, %f"), target.X, target.Y, target.Z);
-			}
+			AttackMovement();
 		}
-		else
+		else if (MovmentState == MovmentStates::Idle && NewTarget)
 		{
-			MTimer += GetWorld()->DeltaTimeSeconds;
-		}
+			if (MovmentTimer <= MTimer)
+			{
+				NewTarget = false;
+				IdleMovement();
+			}
+			else
+			{
+				MTimer += GetWorld()->DeltaTimeSeconds;
+			}
 		
+		}
+		return target;
 	}
-	return target;
+	else if (movementAI == MovementAI::Boss)
+	{
+		BossMovementStates();
+		UE_LOG(LogTemp, Log, TEXT("Movement state = %s"), *UEnum::GetValueAsString(MovmentState));
+		return FVector(0,0,0);
+	}
+	return FVector(0, 0, 0);
 }
 
-bool UAIComponent::base_EnemyCombatAI()
+bool UAIComponent::PlayCombatAI()
 {
 	if (MovmentState != MovmentStates::Attack)
 	{
@@ -82,7 +84,7 @@ bool UAIComponent::base_EnemyCombatAI()
 	else
 	{
 		Base_EnemyCombatState();
-		if (CombatState == CombatStates::Attack)
+		if (CombatState == CombatStates::Basic_Attack)
 		{
 			UE_LOG(LogTemp, Log, TEXT("Hit enemy:"));
 		}
@@ -98,13 +100,12 @@ void UAIComponent::HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 {
 	for (int i = 0; i < 10; ++i)
 	{
-		if (Targets[i] == nullptr)
+		if (Targets[i] == nullptr && OtherActor->GetComponentByClass<UAIComponent>() == nullptr)
 		{
 			Targets[i] = OtherActor;
 			return;
 		}
 	}
-	base_EnemyMovmentAI();
 }
 
 void UAIComponent::HandleEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -116,7 +117,6 @@ void UAIComponent::HandleEndOverlap(UPrimitiveComponent* OverlappedComponent, AA
 			Targets[i] = nullptr;
 		}
 	}
-	base_EnemyMovmentAI();
 }
 
 bool UAIComponent::IsStuck()
@@ -144,13 +144,12 @@ bool UAIComponent::IsStuck()
 
 void UAIComponent::Base_EnemyMovmentState()
 {
-	for (int i = 1; i < 10; ++i)
+	for (int i = 0; i < 10; ++i)
 	{
 		if (Targets[i] != nullptr)
 		{
 			MovmentState = MovmentStates::Attack;
-			target = Targets[i]->GetActorLocation();
-			break;
+			return;
 		}
 		else
 		{
@@ -164,10 +163,88 @@ void UAIComponent::Base_EnemyCombatState()
 	int randstate = FMath::RandRange(1, 2);
 	if (randstate == 1)
 	{
-		CombatState = CombatStates::Attack;
+		CombatState = CombatStates::Basic_Attack;
 	}
 	else if (randstate == 2)
 	{
 		CombatState = CombatStates::Block;
+	}
+}
+
+void UAIComponent::BossMovementStates()
+{
+	int randstate;
+	randstate = FMath::RandRange(1, 2);
+	if (MovmentState == MovmentStates::Backup)
+	{
+		if (randstate == 1)
+		{
+			MovmentState = MovmentStates::Charge;
+		}
+		else if (randstate == 2)
+		{
+			MovmentState = MovmentStates::Attack;
+		}
+		return;
+	}
+	else if (randstate == 1)
+	{
+		MovmentState = MovmentStates::Attack;
+	}
+	else if (randstate == 2)
+	{
+		MovmentState = MovmentStates::Backup;
+	}
+	/*for (int i = 1; i < 10; ++i)
+	{
+		if (Targets[i] != nullptr)
+		{
+			randstate = FMath::RandRange(1, 2);
+			if (MovmentState == MovmentStates::Backup)
+			{
+				randstate = FMath::RandRange(1, 3);
+				if (randstate == 1)
+				{
+					MovmentState = MovmentStates::Charge;
+				}
+				else if (randstate == 2)
+				{
+					MovmentState = MovmentStates::Backup;
+				}
+				else if (randstate == 3)
+				{
+					MovmentState = MovmentStates::Attack;
+				}
+			}
+			else if (randstate == 1)
+			{
+				MovmentState = MovmentStates::Attack;
+			}
+		}
+	}*/
+}
+
+void UAIComponent::AttackMovement()
+{
+	for (int i = 0; i < 10; ++i)
+	{
+		if (Targets[i] != nullptr)
+		{
+			target = Targets[i]->GetActorLocation();
+			return;
+		}
+	}
+}
+
+void UAIComponent::IdleMovement()
+{
+	float angle = FMath::RandRange(-45.f, 45.f);
+	angle += GetOwner()->GetActorRotation().Yaw;
+	FVector offset = FVector(cosf(angle), sinf(angle), 0) * TravleDistanse;
+	if (FVector::DistXY(GetOwner()->GetActorLocation() + offset, SpawnPoint) <= MovmentRadiusFromSpawnPoint)
+	{
+		target = GetOwner()->GetActorLocation() + offset;
+		target.Z = 100.f;
+		UE_LOG(LogTemp, Log, TEXT("move to random position: %f, %f, %f"), target.X, target.Y, target.Z);
 	}
 }
