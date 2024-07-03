@@ -36,25 +36,32 @@ public:
 	float Damage = 10.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Health = 100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	float CameraRotationSpeed = 1;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	//Setup Default Components
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	USpringArmComponent* SpringComp = nullptr;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	UCameraComponent* CameraComp = nullptr;
 
 	//Inputs
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputMappingContext* InputMappingContext;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* InputToMove;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* InputLightAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* InputCameraRotate;
+
 
 	UFUNCTION()
 	void HandleMovementInput(const FInputActionValue& Value);
+	UFUNCTION()
+	void HandleCameraRotationInput(const FInputActionValue& Value);
 
 };

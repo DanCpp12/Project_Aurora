@@ -50,6 +50,7 @@ void APA_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	UEnhancedInputComponent* EInputComp = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EInputComp) {
 		EInputComp->BindAction(InputToMove, ETriggerEvent::Triggered, this, &APA_Player::HandleMovementInput);
+		EInputComp->BindAction(InputCameraRotate, ETriggerEvent::Triggered, this, &APA_Player::HandleCameraRotationInput);
 	}
 }
 
@@ -63,4 +64,10 @@ void APA_Player::HandleMovementInput(const FInputActionValue& Value)
 		AddMovementInput(Forward, MoveVector.Y);
 		AddMovementInput(Right, MoveVector.X);
 	}
+}
+
+void APA_Player::HandleCameraRotationInput(const FInputActionValue& Value)
+{
+	float RotationValue = Value.Get<float>();
+	AddControllerYawInput(RotationValue*CameraRotationSpeed);
 }
