@@ -57,6 +57,8 @@ public:
 	UInputAction* InputLightAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* InputCameraRotate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* InputInteract;
 
 
 	UFUNCTION()
