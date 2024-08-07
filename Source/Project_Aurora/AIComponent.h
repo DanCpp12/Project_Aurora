@@ -4,6 +4,27 @@
 
 class USphereComponent;
 
+USTRUCT(BlueprintType)
+struct FAIReturn
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector Position;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bPathFind;
+
+	FAIReturn()
+	{
+		Position = FVector(0);
+		bPathFind = false;
+	}
+	FAIReturn(FVector target, bool pathfind)
+	{
+		Position = target;
+		bPathFind = pathfind;
+	}
+};
+
 UENUM(BlueprintType)
 enum class MovementAI : uint8
 {
@@ -54,7 +75,7 @@ public:
 	void SetCombatAI(TEnumAsByte<CombatAI> AI) { combatAI = AI; };
 
 	UFUNCTION(BlueprintCallable)
-	FVector PlayMovmentAI();
+	FAIReturn PlayMovmentAI();
 
 	UFUNCTION(BlueprintCallable)
 	bool PlayCombatAI();
@@ -75,22 +96,41 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool NewTarget = true;
-	
+
 
 private:
 	UPROPERTY(EditDefaultsOnly)
 	USphereComponent* ViewField = nullptr;
+	//AI settings
+	UPROPERTY(Editanywhere, Category = "Movment Settings")
+	int ViewFieldSize = 300;
 
 	//movment restricktions
 	FVector SpawnPoint;
-	float MTimer = 0;
+
 	UPROPERTY(Editanywhere, Category = "Movment Settings")
 	int TravleDistanse = 300;
 	UPROPERTY(Editanywhere, Category = "Movment Settings")
 	int MovmentRadiusFromSpawnPoint = 1000;
 	UPROPERTY(Editanywhere, Category = "Movment Settings")
 	float MovmentTimer = 1;
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	float MTimer = 0;
 
+	UPROPERTY(Editanywhere, Category = "Movment Settings")
+	int BackupDistance = 100;
+
+	UPROPERTY(Editanywhere, Category = "Movment Settings")
+	int ChargeDistance = 300;
+	UPROPERTY(Editanywhere, Category = "Movment Settings")
+	float TimeToCharge = 1;
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	float ChargeTimer = 0;
+	bool bCanCharge = true;
+	UPROPERTY(Editanywhere, Category = "Movment Settings")
+	float AttackTime = 7;
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	float AttckTimer = 0;
 
 	//stuck
 	UPROPERTY(Editanywhere, Category = "Stuck Settings")
@@ -115,6 +155,11 @@ private:
 	MovmentStates MovmentState;
 	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
 	CombatStates CombatState;
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	bool bPathFind = false;
+	UPROPERTY(VisibleAnywhere, Category = "AI Debug")
+	bool bmove;
+
 	//states
 	void Base_EnemyMovmentState();
 	void Base_EnemyCombatState();
@@ -127,4 +172,6 @@ private:
 	//movement
 	void AttackMovement();
 	void IdleMovement();
+	void BackupMovement();
+	void ChargeMovement();
 };

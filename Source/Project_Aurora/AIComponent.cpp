@@ -2,12 +2,12 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "Math/UnrealMathUtility.h"
+#include "Logging/StructuredLog.h"
 
 UAIComponent::UAIComponent()
 {
 	//create sphere object
 	ViewField = CreateDefaultSubobject<USphereComponent>("ViewField");
-	ViewField->SetSphereRadius(300);
 	ViewField->bOwnerNoSee = false;
 	ViewField->SetHiddenInGame(false);
 	ViewField->OnComponentBeginOverlap.AddDynamic(this, &UAIComponent::HandleBeginOverlap);
@@ -19,6 +19,7 @@ void UAIComponent::BeginPlay()
 	Super::BeginPlay();
 
 	//attach sphere to owner
+	ViewField->SetSphereRadius(ViewFieldSize);
 	ViewField->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	GetOwner()->FinishAndRegisterComponent(ViewField);
 	ViewField->SetupAttachment(GetOwner()->GetRootComponent());
@@ -26,23 +27,33 @@ void UAIComponent::BeginPlay()
 	SpawnPoint = GetOwner()->GetActorLocation();
 }
 
-FVector UAIComponent::PlayMovmentAI()
+FAIReturn UAIComponent::PlayMovmentAI()
 {
+	if ((int)GetOwner()->GetActorLocation().X <= (int)target.X + 60 && (int)GetOwner()->GetActorLocation().Y <= (int)target.Y + 60 &&
+		(int)GetOwner()->GetActorLocation().X >= (int)target.X - 60 && (int)GetOwner()->GetActorLocation().Y >= (int)target.Y - 60 || AttckTimer >= AttackTime)
+	{
+		if (MovmentState == MovmentStates::Idle && !NewTarget)
+		{
+			MTimer = 0;
+		}
+		if (AttckTimer >= AttackTime)
+		{
+			AttckTimer = 0;
+		}
+		bCanCharge = true;
+		NewTarget = true;
+		bPathFind = true;
+	}
+	
+	if (!NewTarget) { NewTarget = IsStuck(); }
+	DelayTimer += GetWorld()->DeltaTimeSeconds;
+
 	if (movementAI == MovementAI::Base)
 	{
-		if ((int)GetOwner()->GetActorLocation().X <= (int)target.X + 60 && (int)GetOwner()->GetActorLocation().Y <= (int)target.Y + 60 &&
-			(int)GetOwner()->GetActorLocation().X >= (int)target.X - 60 && (int)GetOwner()->GetActorLocation().Y >= (int)target.Y - 60)
+		if (NewTarget)
 		{
-			if (MovmentState == MovmentStates::Idle && !NewTarget)
-			{
-				MTimer = 0;
-			}
-			NewTarget = true;
+			Base_EnemyMovmentState();
 		}
-		if (!NewTarget) { NewTarget = IsStuck(); }
-		DelayTimer += GetWorld()->DeltaTimeSeconds;
-
-		Base_EnemyMovmentState();
 
 		if (MovmentState == MovmentStates::Attack)
 		{
@@ -62,15 +73,49 @@ FVector UAIComponent::PlayMovmentAI()
 			}
 		
 		}
-		return target;
+		else
+		{
+			return FAIReturn(GetOwner()->GetActorLocation(), bPathFind);
+		}
+		return FAIReturn(target, bPathFind);
 	}
 	else if (movementAI == MovementAI::Boss)
 	{
-		BossMovementStates();
-		UE_LOG(LogTemp, Log, TEXT("Movement state = %s"), *UEnum::GetValueAsString(MovmentState));
-		return FVector(0,0,0);
+		if (NewTarget)
+		{
+			BossMovementStates();
+		}
+
+		if (MovmentState == MovmentStates::Attack)
+		{
+			NewTarget = false;
+			AttackMovement();
+			AttckTimer += GetWorld()->DeltaTimeSeconds;
+		}
+		else if (MovmentState == MovmentStates::Backup)
+		{
+			NewTarget = false;
+			BackupMovement();
+		}
+		else if (MovmentState == MovmentStates::Charge)
+		{
+			NewTarget = false;
+			bPathFind = false;
+			if (bCanCharge)
+			{
+				ChargeMovement();
+				ChargeTimer += GetWorld()->DeltaTimeSeconds;
+			}
+			/*GetOwner()->AddActorLocalOffset(target, true);
+			return;*/
+		}
+		else
+		{
+			return FAIReturn(GetOwner()->GetActorLocation(), bPathFind);
+		}
+		return FAIReturn(target, bPathFind);
 	}
-	return FVector(0, 0, 0);
+	return FAIReturn(GetOwner()->GetActorLocation(), bPathFind);
 }
 
 bool UAIComponent::PlayCombatAI()
@@ -126,10 +171,27 @@ bool UAIComponent::IsStuck()
 	{
 		if (Delay <= DelayTimer)
 		{
-			OldPosition = GetOwner()->GetActorLocation();
-			DelayTimer = 0;
+			if (MovmentState == MovmentStates::Attack && AttckTimer >= AttackTime)
+			{
+				OldPosition = GetOwner()->GetActorLocation();
+				DelayTimer = 0;
+				return true;
+			}
+			else if (MovmentState == MovmentStates::Backup || MovmentState == MovmentStates::Idle)
+			{
+				OldPosition = GetOwner()->GetActorLocation();
+				DelayTimer = 0;
+				return true;
+			}
+			else if (MovmentState == MovmentStates::Charge && ChargeTimer >= TimeToCharge)
+			{
+				OldPosition = GetOwner()->GetActorLocation();
+				DelayTimer = 0;
+				return true;
+			}
+			return false;
 		}
-		return true;
+		return false;
 	}
 	else
 	{
@@ -173,55 +235,41 @@ void UAIComponent::Base_EnemyCombatState()
 
 void UAIComponent::BossMovementStates()
 {
+	
 	int randstate;
 	randstate = FMath::RandRange(1, 2);
-	if (MovmentState == MovmentStates::Backup)
-	{
-		if (randstate == 1)
-		{
-			MovmentState = MovmentStates::Charge;
-		}
-		else if (randstate == 2)
-		{
-			MovmentState = MovmentStates::Attack;
-		}
-		return;
-	}
-	else if (randstate == 1)
-	{
-		MovmentState = MovmentStates::Attack;
-	}
-	else if (randstate == 2)
-	{
-		MovmentState = MovmentStates::Backup;
-	}
-	/*for (int i = 1; i < 10; ++i)
+	
+	for (int i = 0; i < 10; ++i)
 	{
 		if (Targets[i] != nullptr)
 		{
-			randstate = FMath::RandRange(1, 2);
 			if (MovmentState == MovmentStates::Backup)
 			{
-				randstate = FMath::RandRange(1, 3);
 				if (randstate == 1)
 				{
 					MovmentState = MovmentStates::Charge;
 				}
 				else if (randstate == 2)
 				{
-					MovmentState = MovmentStates::Backup;
-				}
-				else if (randstate == 3)
-				{
 					MovmentState = MovmentStates::Attack;
 				}
+				return;
 			}
 			else if (randstate == 1)
 			{
 				MovmentState = MovmentStates::Attack;
 			}
+			else if (randstate == 2)
+			{
+				MovmentState = MovmentStates::Backup;
+			}
+			return;
 		}
-	}*/
+		else
+		{
+			MovmentState = MovmentStates::Null;
+		}
+	}
 }
 
 void UAIComponent::AttackMovement()
@@ -246,5 +294,50 @@ void UAIComponent::IdleMovement()
 		target = GetOwner()->GetActorLocation() + offset;
 		target.Z = 100.f;
 		UE_LOG(LogTemp, Log, TEXT("move to random position: %f, %f, %f"), target.X, target.Y, target.Z);
+	}
+}
+
+void UAIComponent::BackupMovement()
+{
+	for (int i = 0; i < 10; ++i)
+	{
+		if (Targets[i] != nullptr)
+		{
+			FVector Dir = Targets[i]->GetActorLocation() - GetOwner()->GetActorLocation();
+			Dir.Normalize();
+			target = Dir * -BackupDistance + GetOwner()->GetActorLocation();
+			return;
+		}
+		else
+		{
+			target = GetOwner()->GetActorLocation();
+		}
+	}
+}
+
+void UAIComponent::ChargeMovement()
+{
+	if (TimeToCharge <= ChargeTimer)
+	{
+		ChargeTimer = 0;
+		for (int i = 0; i < 10; ++i)
+		{
+			if (Targets[i] != nullptr)
+			{
+				FVector Dir = Targets[i]->GetActorLocation() - GetOwner()->GetActorLocation();
+				Dir.Normalize();
+				target = Dir * ChargeDistance + GetOwner()->GetActorLocation();
+				bCanCharge = false;
+				return;
+			}
+			else
+			{
+				target = GetOwner()->GetActorLocation();
+			}
+		}
+	}
+	else
+	{
+		target = FVector(-10000000000, 0, 0);
 	}
 }
